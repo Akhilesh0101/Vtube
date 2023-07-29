@@ -23,9 +23,22 @@ const CommentContainer = ({params , comment}) => {
    if(!commentData){
     return null;
    }
+
+   const viewNumber = comment;
+  const commentCount = (viewNumber) => {
+    if (viewNumber < 1000) {
+      return viewNumber.toString();
+    } else if (viewNumber >= 1000 && viewNumber < 1000000) {
+      return (viewNumber / 1000).toFixed(1) + "K";
+    } else if (viewNumber >= 1000000 && viewNumber < 1000000000) {
+      return (viewNumber / 1000000).toFixed(1) + "M";
+    } else if (viewNumber >= 1000000000 && viewNumber < 1000000000000) {
+      return (viewNumber / 1000000000).toFixed(1) + "B";
+    }
+  };
   return (
     <div className='w-full h-96 mt-8'> 
-      <div className='flex gap-8 mb-8 ml-14'><h1>{comment} Comments</h1><h1 className='font-bold'>Sort by</h1></div>
+      <div className='flex gap-8 mb-8 ml-14'><h1>{commentCount} Comments</h1><h1 className='font-bold'>Sort by</h1></div>
       <div className='flex gap-8 ml-14'>
         <img src="https://cdn-icons-png.flaticon.com/512/709/709722.png 
         "
