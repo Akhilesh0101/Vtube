@@ -24,16 +24,16 @@ const CommentContainer = ({params , comment}) => {
     return null;
    }
 
-   const viewNumber = comment;
-  const commentCount = (viewNumber) => {
-    if (viewNumber < 1000) {
-      return viewNumber.toString();
-    } else if (viewNumber >= 1000 && viewNumber < 1000000) {
-      return (viewNumber / 1000).toFixed(1) + "K";
-    } else if (viewNumber >= 1000000 && viewNumber < 1000000000) {
-      return (viewNumber / 1000000).toFixed(1) + "M";
-    } else if (viewNumber >= 1000000000 && viewNumber < 1000000000000) {
-      return (viewNumber / 1000000000).toFixed(1) + "B";
+   
+  const commentCount = (comment) => {
+    if (comment < 1000) {
+      return comment.toString();
+    } else if (comment >= 1000 && comment < 1000000) {
+      return (comment / 1000).toFixed(1) + "K";
+    } else if (comment >= 1000000 && comment < 1000000000) {
+      return (comment / 1000000).toFixed(1) + "M";
+    } else if (comment >= 1000000000 && comment < 1000000000000) {
+      return (comment / 1000000000).toFixed(1) + "B";
     }
   };
   return (
