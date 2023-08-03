@@ -1,3 +1,6 @@
+
+ 
+
 import React, { useContext, useEffect, useState } from "react";
 import { toggleMenu } from "./utils/appSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -5,22 +8,23 @@ import { YOUTUBE_SEARCH_API } from "./utils/constant";
 import { addCache } from "./utils/searchSlice";
 import VideoContainer from "./VideoContainer";
 import SearchVideoContainer from "./SearchVideoContainer";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useNavigation, useSearchParams } from "react-router-dom";
 import { addResult } from "./utils/searchResultSlice";
 import Query from "./utils/searchTextContext";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 const Head = () => {
+  const { transcript,  listening,resetTranscript } = useSpeechRecognition();
+  // if(!browserSupportsSpeechRecognition)
+  //     return null;
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestion, setShowSuggestion] = useState([]);
   const [hideSuggestion, setHideSuggestion] = useState(false);
 
-  // const [showResult, setShowResult] = useState(false);
-  // console.log(searchQuery)
   const searchCache = useSelector((store) => store.searchSlice);
-  // console.log(searchCache.searchQuery)
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // console.log("ApiCall-");
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchCache[searchQuery]) {
@@ -36,15 +40,9 @@ const Head = () => {
   }, [searchQuery]);
 
   const getSearchSuggestion = async () => {
-    // console.log("ApiCall- " + searchQuery);
     const data = await fetch(YOUTUBE_SEARCH_API + searchQuery);
     const json = await data.json();
-    // console.log(json);
     setShowSuggestion(json[1]);
-
-    // console.log(json);
-
-    //update cache
     dispatch(
       addCache({
         [searchQuery]: json[1],
@@ -56,19 +54,27 @@ const Head = () => {
     dispatch(toggleMenu());
   };
 
-  const navigate = useNavigate();
+ 
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery) {
       navigate(`/search/${searchQuery}`);
-      setSearchQuery("");
+      setSearchQuery(searchQuery);
     }
   };
+
+  if(transcript){
+    // setSearchQuery(transcript)
+    navigate(`/search/${transcript}`)
+    
+  }
   // console.log(searchQuery)''
 
   // console.log(clickHandler);
+ 
   return (
+    
     <div className="grid grid-flow-col p-5 m-2 shadow-lg ">
       <div className="flex col-span-1">
         <img
@@ -91,7 +97,8 @@ const Head = () => {
       <div className="col-span-10 px-10 ">
         <input
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => setSearchQuery(prevSearchQuery => e.target.value)}
+
           onFocus={() => setHideSuggestion(true)}
           onBlur={() => setHideSuggestion(false)}
           type="text"
@@ -108,22 +115,32 @@ const Head = () => {
          🔍
         </button>
 
-        {hideSuggestion && (
-          <ul className="fixed w-[33rem] py-2 px-2 bg-white shadow-lg rounded-lg border border-gray-200">
-            {showSuggestion.map((s) => (
-              <li
-                key={s}
-                className="border-bottom p-1.5 shadow-sm hover:bg-slate-100 "
-              >
-                🔍 {s}
-              </li>
-            ))}
-          </ul>
-        )}
+        
+    
+      <button className="p-[8px] ml-6 rounded-full bg-gray-200 hover:bg-gray-300" onClick={SpeechRecognition.startListening}>🎙️</button>
+  
+    
+    
+
+      {hideSuggestion && (
+  <ul className="fixed w-[33rem] py-2 px-2 bg-white shadow-lg rounded-lg border border-gray-200">
+    {showSuggestion.map((suggestion, index) => (
+      <li
+        key={index}
+        className="border-bottom p-1.5 shadow-sm hover:bg-slate-100"
+      >
+        🔍 {suggestion}
+      </li>
+    ))}
+  </ul>
+)}
+
       </div>
 
       <div>
+      
         <img
+        // onClick={()=>navigate("/signin")}
           className="h-8 col-span-1"
           src="https://cdn-icons-png.flaticon.com/512/709/709722.png"
           alt="user-icon"
