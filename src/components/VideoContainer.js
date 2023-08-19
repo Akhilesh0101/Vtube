@@ -17,7 +17,7 @@ const VideoContainer = () => {
   useEffect(()=>{
     window.addEventListener("scroll",infiniteScroll, true);
     return()=>{
-      window.removeEventListener("scroll,infiniteScroll", true);
+      window.removeEventListener("scroll",infiniteScroll, true);
     }
   },[nextPageToken]);
 
