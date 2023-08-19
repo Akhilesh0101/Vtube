@@ -25,8 +25,8 @@ const VideoContainer = () => {
     const url = nextPageToken !== "" ? `${YOUTUBE_VIDEO_API}&pageToken=${nextPageToken}` : YOUTUBE_VIDEO_API;
     const data= await fetch(url);
     const json = await data.json();
-    setnextPageToken(json?.nextPageToken)
-    setVideos(json.items)
+    setnextPageToken(json?.nextPageToken);
+    setVideos([...videos, ...json.items]);
   }
 
   const infiniteScroll = ()=>{
